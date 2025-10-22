@@ -1,13 +1,25 @@
 import { Box, Button, Sheet, Typography } from '@mui/joy';
 import Card from '@mui/joy/Card';
-import { Copy, Link, QrCode, Sparkles } from 'lucide-react';
+import { Check, Copy, Link, QrCode, Sparkles } from 'lucide-react';
 import { API_URL } from '../config';
+import { useState } from 'react';
+import { QRDialog } from './QRDialog';
 
 interface Props {
   result: { originalUrl: string; shortId: string };
 }
 
 export const ResultBlock = ({ result: { originalUrl, shortId } }: Props) => {
+  const shortUrl = `${API_URL}/${shortId}`;
+  const [copied, setCopied] = useState(false);
+  const [qrOpened, setQrOpened] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(shortUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
+  };
+
   return (
     <Card
       variant="outlined"
@@ -68,7 +80,7 @@ export const ResultBlock = ({ result: { originalUrl, shortId } }: Props) => {
           boxShadow: 'xs',
         }}
       >
-        {`${API_URL}/${shortId}`}
+        {shortUrl}
       </Sheet>
 
       <Box display={'flex'} gap={1} marginTop={1} justifyContent={'flex-end'}>
@@ -77,22 +89,29 @@ export const ResultBlock = ({ result: { originalUrl, shortId } }: Props) => {
           variant="solid"
           startDecorator={<QrCode />}
           sx={{ width: { xs: '100%', sm: '30%' } }}
+          onClick={() => setQrOpened(true)}
         >
           QR
         </Button>
         <Button
           size="lg"
           color="success"
-          variant="solid"
-          startDecorator={<Copy />}
+          variant={copied ? 'soft' : 'solid'}
+          startDecorator={copied ? <Check /> : <Copy />}
           sx={{ width: { xs: '100%', sm: '70%' } }}
+          onClick={handleCopy}
         >
-          Copy
+          {copied ? 'Copied!' : 'Copy'}
         </Button>
       </Box>
       <Button size="lg" variant="soft" color="neutral">
         Short another link
       </Button>
+      <QRDialog
+        open={qrOpened}
+        onClose={() => setQrOpened(false)}
+        url={shortUrl}
+      />
     </Card>
   );
 };
