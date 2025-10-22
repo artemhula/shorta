@@ -3,6 +3,7 @@ import { redirectLink, shortLink } from './controllers/linkController.js';
 import { validateUrl } from './middlewares/validateUrl.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -10,6 +11,12 @@ const app = express();
 const port = process.env.PORT || 3000;
 const db = process.env.DATABASE || '';
 await mongoose.connect(db);
+
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+  })
+);
 
 app.use(express.json());
 

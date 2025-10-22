@@ -1,9 +1,42 @@
 import { Box, CssBaseline, CssVarsProvider } from '@mui/joy';
 import { Header } from '../components/Header';
-import { URLForm } from '../components/URLForm';
 import { theme } from '../utils/theme';
+import { useState } from 'react';
+import { URLForm } from '../components/URLForm';
+import { API_URL } from '../config';
+import { ResultBlock } from '../components/ResultBlock';
+import Alert from '@mui/joy/Alert';
 
 export const ShortenURLPage = () => {
+  const [url, setUrl] = useState<string>('');
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const shortenHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/shorten`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ originalUrl: url }),
+      });
+      if (!res.ok) {
+        const errData = await res.json();
+        setError(errData.error || 'Server error');
+        return;
+      }
+      const data = await res.json();
+      setResult(data);
+    } catch (e) {
+      setError((e as Error).message || 'Error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <CssVarsProvider theme={theme} defaultMode="dark">
       <CssBaseline />
@@ -19,13 +52,33 @@ export const ShortenURLPage = () => {
         <Box
           sx={{
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             minHeight: 'calc(100vh - 76px)',
             px: 2,
+            gap: 2,
           }}
         >
-          <URLForm />
+          {error && (
+            <Alert
+              color="danger"
+              variant="soft"
+              sx={{ width: '100%', maxWidth: 700 }}
+            >
+              {error}
+            </Alert>
+          )}
+          {result ? (
+            <ResultBlock result={result} />
+          ) : (
+            <URLForm
+              onSubmit={shortenHandler}
+              url={url}
+              setUrl={setUrl}
+              loading={loading}
+            />
+          )}
         </Box>
       </Box>
     </CssVarsProvider>

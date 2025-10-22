@@ -1,7 +1,15 @@
 import { Box, Button, Card, Input, Typography } from '@mui/joy';
+import CircularProgress from '@mui/joy/CircularProgress';
 import { ClipboardPaste } from 'lucide-react';
 
-export const URLForm = () => {
+interface Props {
+  url: string;
+  setUrl: (u: string) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  loading?: boolean;
+}
+
+export const URLForm = ({ url, setUrl, onSubmit, loading }: Props) => {
   return (
     <Card
       variant="outlined"
@@ -42,17 +50,23 @@ export const URLForm = () => {
           gap: 2,
           mb: 2,
         }}
+        onSubmit={onSubmit}
       >
         <Input
           placeholder="Paste your link"
           size="lg"
           startDecorator={<ClipboardPaste size={20} />}
           sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
         />
         <Button
           size="lg"
           variant="solid"
+          type="submit"
           sx={{ width: { xs: '100%', sm: 'auto' } }}
+          disabled={loading}
+          startDecorator={loading ? <CircularProgress size="sm" /> : null}
         >
           Shorten
         </Button>

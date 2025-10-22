@@ -1,7 +1,8 @@
 import { Box, Typography } from '@mui/joy';
 import { ThemeToggle } from './ThemeToggle';
+import { memo } from 'react';
 
-export const Header = () => {
+export const Header = memo(() => {
   return (
     <Box
       sx={{
@@ -27,4 +28,4 @@ export const Header = () => {
       <ThemeToggle />
     </Box>
   );
-};
+});
