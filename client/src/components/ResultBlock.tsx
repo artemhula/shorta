@@ -7,9 +7,13 @@ import { QRDialog } from './QRDialog';
 
 interface Props {
   result: { originalUrl: string; shortId: string };
+  resetLink: () => void;
 }
 
-export const ResultBlock = ({ result: { originalUrl, shortId } }: Props) => {
+export const ResultBlock = ({
+  result: { originalUrl, shortId },
+  resetLink,
+}: Props) => {
   const shortUrl = `${API_URL}/${shortId}`;
   const [copied, setCopied] = useState(false);
   const [qrOpened, setQrOpened] = useState(false);
@@ -104,7 +108,7 @@ export const ResultBlock = ({ result: { originalUrl, shortId } }: Props) => {
           {copied ? 'Copied!' : 'Copy'}
         </Button>
       </Box>
-      <Button size="lg" variant="soft" color="neutral">
+      <Button size="lg" variant="soft" color="neutral" onClick={resetLink}>
         Short another link
       </Button>
       <QRDialog

@@ -36,6 +36,10 @@ export const ShortenURLPage = () => {
       setLoading(false);
     }
   };
+  const resetAll = () => {
+    setUrl('');
+    setResult(null);
+  };
 
   return (
     <CssVarsProvider theme={theme} defaultMode="dark">
@@ -70,7 +74,7 @@ export const ShortenURLPage = () => {
             </Alert>
           )}
           {result ? (
-            <ResultBlock result={result} />
+            <ResultBlock result={result} resetLink={resetAll} />
           ) : (
             <URLForm
               onSubmit={shortenHandler}
