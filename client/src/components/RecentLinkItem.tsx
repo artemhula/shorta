@@ -48,7 +48,13 @@ export const RecentLinkItem = ({
           {!copied ? <Copy size={16} /> : <Check size={16} />}
         </IconButton>
       </Box>
-      <Typography level="body-xs" color="neutral">
+      <Typography
+        level="body-xs"
+        color="neutral"
+        overflow={'hidden'}
+        textOverflow={'ellipsis'}
+        maxWidth={'100%'}
+      >
         {originalUrl}
       </Typography>
       <Typography
